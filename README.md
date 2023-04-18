@@ -13,10 +13,10 @@ Parent project is not used anymore, this is mostly a lightweight layer on top of
 
 Action | Keys 
 --- | :-:
-**Switch** to virtual desktop **1, 2, etc.**<br>*(you can also use the Numpad)*|<kbd>Windows</kbd> + <kbd>1</kbd><br><kbd>Windows</kbd> + <kbd>2</kbd><br>...<br><kbd>Windows</kbd> + <kbd>9</kbd>
+**Switch** to virtual desktop **1, 2, etc.**<br>|<kbd>Windows</kbd> + <kbd>1</kbd><br><kbd>Windows</kbd> + <kbd>2</kbd><br>...<br><kbd>Windows</kbd> + <kbd>9</kbd>
 **Switch** to the virtual desktop on the **left**<br>*(auto-cycles from the first to the last desktop)*|<kbd>Windows + Shift </kbd> + <kbd>Left</kbd><br>
 **Switch** to the virtual desktop on the **right**<br>*(auto-cycles from the last to the first desktop)*|<kbd>Windows + Shift </kbd> + <kbd>Left</kbd><br>
-**Move** the current window to another desktop, then switch to it<br>*Keys <kbd>Windows + Shift + 1</kbd>, <kbd>Windows + Shift + 2</kbd>, etc.
+**Move** the current window to another desktop, then switch to it| <kbd>Windows + Shift</kbd> + <kbd>1</kbd>, <kbd>Windows + Shift</kbd> + <kbd>2</kbd>, etc.
 
 ## Overview
 This script creates more convenient hotkeys for switching virtual desktops in Windows 10. I built this to better mirror the mapping I use on linux (with i3), and it's always annoyed me that Windows does not have better hotkey support for this feature (for instance, there's no way to go directly to a desktop by number).
