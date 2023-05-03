@@ -98,6 +98,51 @@ MoveOrGotoDesktopNumber(num) {
         MoveCurrentWindowToDesktop(num)
     } else {
         GoToDesktopNumber(num)
+        HideTeams()
+    }
+    return
+}
+
+getWindowMonitorNumber(id) {
+    MonitorCount := MonitorGetCount()
+    WinGetClientPos(&x, &y, &width, &height, id) ; Get position and size of active window
+    title:=WinGetTitle(id)
+    ; only take in account center
+    x := x + width /2
+    y := y + height /2
+    Loop MonitorCount
+    {
+        MonitorGetWorkArea(A_Index, &WL, &WT, &WR, &WB)
+        If (x >= WL && x <= WR && y >= WT && y <= WB)
+        {
+            return A_Index
+        }
+    }
+    return 0
+}
+ToggleTeams() {
+    ToggleOrHideTeams(true)
+}
+HideTeams() {
+    ToggleOrHideTeams(false)
+}
+ToggleOrHideTeams(toggle) {
+    mainmonitor := MonitorGetPrimary()
+    ids := WinGetList("ahk_exe Teams.exe") ; Get a list of all Microsoft Teams windows
+    for TeamsWindowID in ids
+    {
+        If WinGetMinMax(TeamsWindowID) > -1 {
+            If getWindowMonitorNumber(TeamsWindowID) == mainmonitor {
+                WinMinimize ("ahk_id " TeamsWindowID)
+            }
+        }
+        Else ; If the Microsoft Teams window is not currently active, show it and activate it
+        {
+            if (toggle) {
+                WinShow("ahk_id " TeamsWindowID)
+                WinActivate("ahk_id " TeamsWindowID)
+            }
+        }
     }
     return
 }
@@ -116,41 +161,62 @@ OnChangeDesktop(wParam, lParam, msg, hwnd) {
     ; TraySetIcon(".\Icons\icon" NewDesktop ".ico")
 }
 
-#1:: MoveOrGotoDesktopNumber(0)
-#2:: MoveOrGotoDesktopNumber(1)
-#3:: MoveOrGotoDesktopNumber(2)
-#4:: MoveOrGotoDesktopNumber(3)
-#5:: MoveOrGotoDesktopNumber(4)
-#6:: MoveOrGotoDesktopNumber(5)
-#7:: MoveOrGotoDesktopNumber(6)
-#8:: MoveOrGotoDesktopNumber(7)
+!1:: MoveOrGotoDesktopNumber(0)
+!2:: MoveOrGotoDesktopNumber(1)
+!3:: MoveOrGotoDesktopNumber(2)
+!4:: MoveOrGotoDesktopNumber(3)
+!5:: MoveOrGotoDesktopNumber(4)
+!6:: MoveOrGotoDesktopNumber(5)
+!7:: MoveOrGotoDesktopNumber(6)
+!8:: MoveOrGotoDesktopNumber(7)
 ; same in french layout
-#&:: MoveOrGotoDesktopNumber(0)
-#é:: MoveOrGotoDesktopNumber(1)
-#":: MoveOrGotoDesktopNumber(2)
-#':: MoveOrGotoDesktopNumber(3)
-#(:: MoveOrGotoDesktopNumber(4)
-#-:: MoveOrGotoDesktopNumber(5)
-#è:: MoveOrGotoDesktopNumber(6)
-#_:: MoveOrGotoDesktopNumber(7)
+!&:: MoveOrGotoDesktopNumber(0)
+!é:: MoveOrGotoDesktopNumber(1)
+!":: MoveOrGotoDesktopNumber(2)
+!':: MoveOrGotoDesktopNumber(3)
+!(:: MoveOrGotoDesktopNumber(4)
+!-:: MoveOrGotoDesktopNumber(5)
+!è:: MoveOrGotoDesktopNumber(6)
+!_:: MoveOrGotoDesktopNumber(7)
+
+!à:: ToggleTeams()
+!0:: ToggleTeams()
 
 ; move with shift
-#+1:: MoveCurrentWindowToDesktop(0)
-#+2:: MoveCurrentWindowToDesktop(1)
-#+3:: MoveCurrentWindowToDesktop(2)
-#+4:: MoveCurrentWindowToDesktop(3)
-#+5:: MoveCurrentWindowToDesktop(4)
-#+6:: MoveCurrentWindowToDesktop(5)
-#+7:: MoveCurrentWindowToDesktop(6)
-#+8:: MoveCurrentWindowToDesktop(7)
+!+1:: MoveCurrentWindowToDesktop(0)
+!+2:: MoveCurrentWindowToDesktop(1)
+!+3:: MoveCurrentWindowToDesktop(2)
+!+4:: MoveCurrentWindowToDesktop(3)
+!+5:: MoveCurrentWindowToDesktop(4)
+!+6:: MoveCurrentWindowToDesktop(5)
+!+7:: MoveCurrentWindowToDesktop(6)
+!+8:: MoveCurrentWindowToDesktop(7)
 ; same in french layout
-#+&:: MoveCurrentWindowToDesktop(0)
-#+é:: MoveCurrentWindowToDesktop(1)
-#+":: MoveCurrentWindowToDesktop(2)
-#+':: MoveCurrentWindowToDesktop(3)
-#+(:: MoveCurrentWindowToDesktop(4)
-#+-:: MoveCurrentWindowToDesktop(5)
-#+è:: MoveCurrentWindowToDesktop(6)
-#+_:: MoveCurrentWindowToDesktop(7)
-#^Left:: GoToPrevDesktop()
-#^Right:: GoToNextDesktop()
+!+&:: MoveCurrentWindowToDesktop(0)
+!+é:: MoveCurrentWindowToDesktop(1)
+!+":: MoveCurrentWindowToDesktop(2)
+!+':: MoveCurrentWindowToDesktop(3)
+!+(:: MoveCurrentWindowToDesktop(4)
+!+-:: MoveCurrentWindowToDesktop(5)
+!+è:: MoveCurrentWindowToDesktop(6)
+!+_:: MoveCurrentWindowToDesktop(7)
+!^Left:: GoToPrevDesktop()
+!^Right:: GoToNextDesktop()
+
+;LWin::Return
+!h::Enter
+!g::Enter
+!b::Enter
+!y::BS
+!t::^t
+!c::^c
+!v::^v
+!x::^x
+!z::^z
+!s::^s
+!j::Left
+!k::Down
+!l::Right
+!i::Up
+#r::Reload
+;#H::WinHide "A"
