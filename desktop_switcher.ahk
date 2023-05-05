@@ -182,18 +182,29 @@ AltTabSameApp() {
     ; do the loop
     WinActivate(l[1])
 }
+
+; send é and è when e key is long pressed (similar to macos)
 $e:: {
     
-	if keyWait("e" , "T0.2") {
-		send "e"
-    }
-	else {
-        send("é")
+    ; first send the real e. if you dont do that, the 
+    ;next key may appear before the e if typed fast enough.
+    send("e")
+	if !keyWait("e" , "T0.2") {
+        send("{BS}é")
         if !keyWait("e" , "T0.2") {
             send "{BS}è"
         }
     }
 	keyWait "e"
+return
+}
+$u:: {
+    
+    send("u")
+	if !keyWait("u" , "T0.2") {
+        send("{BS}ù")
+    }
+	keyWait "u"
 return
 }
 
@@ -205,17 +216,7 @@ return
 !6:: MoveOrGotoDesktopNumber(5)
 !7:: MoveOrGotoDesktopNumber(6)
 !8:: MoveOrGotoDesktopNumber(7)
-; same in french layout
-!&:: MoveOrGotoDesktopNumber(0)
-!é:: MoveOrGotoDesktopNumber(1)
-!":: MoveOrGotoDesktopNumber(2)
-!':: MoveOrGotoDesktopNumber(3)
-!(:: MoveOrGotoDesktopNumber(4)
-!-:: MoveOrGotoDesktopNumber(5)
-!è:: MoveOrGotoDesktopNumber(6)
-!_:: MoveOrGotoDesktopNumber(7)
 
-!à:: ToggleTeams()
 !0:: ToggleTeams()
 
 ; move with shift
@@ -227,23 +228,10 @@ return
 !+6:: MoveCurrentWindowToDesktop(5)
 !+7:: MoveCurrentWindowToDesktop(6)
 !+8:: MoveCurrentWindowToDesktop(7)
-; same in french layout
-!+&:: MoveCurrentWindowToDesktop(0)
-!+é:: MoveCurrentWindowToDesktop(1)
-!+":: MoveCurrentWindowToDesktop(2)
-!+':: MoveCurrentWindowToDesktop(3)
-!+(:: MoveCurrentWindowToDesktop(4)
-!+-:: MoveCurrentWindowToDesktop(5)
-!+è:: MoveCurrentWindowToDesktop(6)
-!+_:: MoveCurrentWindowToDesktop(7)
+
 !^Left:: GoToPrevDesktop()
 !^Right:: GoToNextDesktop()
 
-;LWin::Return
-!h::Enter
-!g::Enter
-!b::Enter
-!y::BS
 !t::^t
 !c::^c
 !v::^v
