@@ -83,12 +83,18 @@ GoToNextDesktop() {
 
 GoToDesktopNumber(num) {
     global GoToDesktopNumberProc
-    ; hack to avoid systray icon flickering
-    focusSysTray()
-    DllCall(GoToDesktopNumberProc, "Int", num, "Int")
-    ; Makes the WinActivate fix less intrusive
-    Sleep 50
-    focusTheForemostWindow()
+    current := DllCall(GetCurrentDesktopNumberProc, "Int")
+    if current == num {
+        AltTabSameApp()
+
+    } Else {
+        ; hack to avoid systray icon flickering
+        focusSysTray()
+        DllCall(GoToDesktopNumberProc, "Int", num, "Int")
+        ; Makes the WinActivate fix less intrusive
+        Sleep 50
+        focusTheForemostWindow()
+    }
     return
 }
 
@@ -147,7 +153,6 @@ ToggleOrHideTeams(toggle) {
     return
 }
 
-
 DllCall(RegisterPostMessageHookProc, "Ptr", A_ScriptHwnd, "Int", 0x1400 + 30, "Int")
 OnMessage(0x1400 + 30, OnChangeDesktop)
 OnChangeDesktop(wParam, lParam, msg, hwnd) {
@@ -159,6 +164,37 @@ OnChangeDesktop(wParam, lParam, msg, hwnd) {
     ; Use Dbgview.exe to checkout the output debug logs
     OutputDebug("Desktop changed to " Name " from " OldDesktop " to " NewDesktop)
     ; TraySetIcon(".\Icons\icon" NewDesktop ".ico")
+}
+AltTabSameApp() {
+    current := WinGetProcessName("A")
+    l := WinGetList("ahk_exe " current)
+    curi := WinGetID("A")
+    switchnext := false
+    for i in l {
+        if switchnext {
+            WinActivate(i)
+            return
+        }
+        if i == curi {
+            switchnext :=true
+        }
+    }
+    ; do the loop
+    WinActivate(l[1])
+}
+$e:: {
+    
+	if keyWait("e" , "T0.2") {
+		send "e"
+    }
+	else {
+        send("é")
+        if !keyWait("e" , "T0.2") {
+            send "{BS}è"
+        }
+    }
+	keyWait "e"
+return
 }
 
 !1:: MoveOrGotoDesktopNumber(0)
