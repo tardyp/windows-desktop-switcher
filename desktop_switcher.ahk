@@ -104,7 +104,7 @@ MoveOrGotoDesktopNumber(num) {
         MoveCurrentWindowToDesktop(num)
     } else {
         GoToDesktopNumber(num)
-        HideTeams()
+        ; HideTeams()
     }
     return
 }
@@ -152,6 +152,47 @@ ToggleOrHideTeams(toggle) {
     }
     return
 }
+
+TileCurrentWindow(split) {
+    try
+        activeHwnd := WinGetID("A")
+    Catch
+        return
+    MonitorCount := MonitorGetCount()
+    WinGetClientPos(&x, &y, &width, &height, activeHwnd) ; Get position and size of active window
+    ; only take in account center
+    x := x + width /2
+    y := y + height /2
+    Loop MonitorCount
+    {
+        MonitorGetWorkArea(A_Index, &WL, &WT, &WR, &WB)
+        If (x >= WL && x <= WR && y >= WT && y <= WB)
+        {
+            nwidth := Floor((WR-WL)/split)
+            nheight := WB-WT
+            tilepos := Floor(x / nwidth)
+            if (nwidth == width)
+            {
+                tilepos += 1
+            }
+            If (tilepos >= split) 
+            {
+                 tilepos := 0
+            }
+            SetWinDelay(0)
+            WinRestore(activeHwnd)
+            WinMove(WL + (tilepos*nwidth),WT, nwidth, nheight, activeHwnd)
+
+            return A_Index
+        }
+    }
+    return 0
+}
+F1:: TileCurrentWindow(1)
+F2:: TileCurrentWindow(2)
+F3:: TileCurrentWindow(3)
+F4:: TileCurrentWindow(4)
+F5:: TileCurrentWindow(5)
 
 DllCall(RegisterPostMessageHookProc, "Ptr", A_ScriptHwnd, "Int", 0x1400 + 30, "Int")
 OnMessage(0x1400 + 30, OnChangeDesktop)
@@ -243,4 +284,5 @@ return
 !l::Right
 !i::Up
 #r::Reload
+!Enter::Run "C:\Users\" A_UserName "\Bin\Alacritty.exe"
 ;#H::WinHide "A"
